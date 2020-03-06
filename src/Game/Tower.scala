@@ -4,30 +4,30 @@ import scala.collection.mutable.Buffer
 
 abstract class Tower(loc: GridPos) {
   
-  val color: Color
-  var dmg: Int
-  val name: String
-  var range: Int
-  var fireRate: Double
-  var target: Option[Enemy]
-  var tickCounter: Int
-  val location: GridPos
+  val color: Color  
+  var dmg: Int                    // tornin dmg numero
+  val name: String       
+  var range: Int                  // kuinka pitkälle torni voi ampua
+  var fireRate: Double            // kuinka nopeasti torni ampuu (joka n ticki)
+  var target: Option[Enemy]       //mikä vihollinen on tähtäimessä, jos mikään
+  var tickCounter: Int            // fireratein apuun
+  val location: GridPos   
   
-def upgrade: Unit
+def upgrade: Unit                 //päivittää esim. dmgen tai fireratin
 
-def shoot: Unit
+def shoot: Unit                   //ampuu targettia 
 
-def chooseTarget(enemies: Buffer[Enemy]): Unit
+def chooseTarget(enemies: Buffer[Enemy]): Unit     //valitsee targetin(se vihollinen joka on rangein sisällä ja joka on liikkunut eniten)
 
 }
 
-class Sniper(loc: GridPos) extends Tower(loc){
+class Sniper(loc: GridPos) extends Tower(loc){         
  
 var dmg = 50
 val color= Red
 val name = "Sniper"
 var range = 100000
-var fireRate = 30
+var fireRate = 100
 var target: Option[Enemy] = None
 var tickCounter= 0
 val location = loc
@@ -55,8 +55,8 @@ class Classic(loc: GridPos) extends Tower(loc){
   var dmg = 15
   val color = Blue
   val name = "Classic"
-  var range = 10
-  var fireRate = 10
+  var range = 4
+  var fireRate = 20
   var target: Option[Enemy] = None
   var tickCounter= 0
   val location = loc

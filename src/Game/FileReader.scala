@@ -9,7 +9,7 @@ import java.io.BufferedReader
 
 object FileReader {
   
-  
+  //lukee kartan jonka pelaaja voi laatia
   
    def readMap(input: Reader): Map = {
      
@@ -26,9 +26,7 @@ object FileReader {
      
 
 
-            // Process the data we just read.
-            // NOTE: To test the line below you must test the class once with a broken header
-
+           
             if (line.startsWith("MAP")) {
                 throw new MapError("Unknown file type");
             }

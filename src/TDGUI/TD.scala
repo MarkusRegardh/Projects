@@ -24,12 +24,13 @@ object TD extends App {
   gamePic = mapPath.foldLeft(gamePic)((a,b)=> a.place(pathPic, b))
   
   
-  val enemyPic = circle(15, Pink)
+  def enemyPic(enemy: Enemy) = if (enemy.isdmged)circle(15, Red) else circle(15,Pink)
+
   val gui = new View (tdg,gameSpeed,"Tower Defence") {
     def makePic = {
       
       gamePic = tdg.towers.foldLeft(gamePic)((a,b)=> a.place(square(pixelsPerGridSquare,b.color), toPixelPos(b.location)))
-      tdg.enemies.foldLeft(gamePic)((a,b)=> a.place(enemyPic,(b.pLocation)))
+      tdg.enemies.foldLeft(gamePic)((a,b)=> a.place(enemyPic(b),(b.pLocation)))
      }
      override def onTick() {
        tdg.timePasses()
