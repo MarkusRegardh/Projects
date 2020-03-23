@@ -17,3 +17,21 @@ noin 15-20h työtä
 
 projekti menee jopa aikataulun edellä
 
+
+
+Väliraportti 2
+
+Pelin perustoimivuudet ovat melkein valmiit. Vielä voi lisätä hieman toimintoja,
+mutta peli kokonaisuudessaan toimii.Koko Scala Swing GUI on tehty muutaman 
+mutkan jälkeen. 
+
+Virallisia testejä en ole vieläkään tehnyt, mutta kaikki muu on testattu pelaamalla 
+peliä, ja ongelmat on saatu ratkaistua.
+
+Suurimpia ongelmia ei ole tullut esiin viime raportin jälkeen. GUI ongelman (joka
+perustui siihen että valikkoja oli vaikea/mahdoton tehdä) sain ratkaistua 
+oppimalla scala swingin.
+
+noin 20h työtä
+
+projekti on vielä aikataulun edellä
