@@ -1,0 +1,19 @@
+Väliraportti 1.
+
+Kaikki pelin toimivuuteen liittyvät luokat sekä funktiot on laadittu, mutta paljon
+etenemistä on vielä. Tornien ja vihollisten vuorovaikutus toimii, sekä pelinluokan
+kokonaisuus toimii. Simppeli GUI on myös tehdy testaamiseen.
+
+Testejä en ole vielä tehnyt, mutta olen tehnyt graaffisen testin missä näkyy
+pelin toimivuus. Tornit ampuvat vihollisia, viholliset kuolevat, uusia vihollisia
+"spawnaa" sekä peli loppuu jos pelaajan HPt loppuvat
+
+Vihollisten sujuva eteneminen oli hieman vaikea, koska oli ongelmia käännöksissä.
+Toinen ongelma oli "spawnaus", joka ensin en toiminut laatimallani "tick" systeemillä,
+mutta se ongelma ratkaisu muuttamalla spawn metodia. Oli myös virhe yrittää tehdä
+GUI o1 kirjastolla, koska kävi myöhemmin ilmi että se ei ole tarpeeksi laaja.
+
+noin 15-20h työtä
+
+projekti menee jopa aikataulun edellä
+
