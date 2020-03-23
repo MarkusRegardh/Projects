@@ -7,40 +7,65 @@ class Game(map: Map) {
   
 var hp = 20                             //pelaajan HP
 var gold = 50                           //rahat millä voi ostaa torneja
-var wave = 1                            //mones kierros on meneillään
+var wave = 0                         //mones kierros on meneillään
 var ticks = 0                           //tick systeemi
 
 
-var towers = Buffer[Tower]( new Classic(new GridPos(5,4)))    //Bufferi missä on kentän tornit
+var towers = Buffer[Tower]()                                  //Bufferi missä on kentän tornit
 
-var enemies= Buffer[Enemy](new Enemy(15,map.start,2))         //Bufferi missä kentän viholliset
+
+var enemies= Buffer[Enemy]()                                  //Bufferi missä kentän viholliset
 
 var enemiesToSpawn = Buffer[Enemy]()                          //Viholliset jotka ei vielä ole spawnattu
 
 def waveOver = {                                              //katsoo onko wave loppunut sekä lisää ensi wavein viholliset
   if (enemies.isEmpty && enemiesToSpawn.isEmpty) {
     wave += 1
-    enemiesToSpawn = Buffer.tabulate(wave + 3)(n => new Enemy(wave*2 + 10, map.start, 2))
+    if (wave%4 == 0) {
+    enemiesToSpawn = Buffer.tabulate(wave + 5)(n => new speedyBoi(wave, map.start).setHP)
+    } else if (wave%7 == 0) {
+    enemiesToSpawn = Buffer.tabulate(1)(n => new thickBoi(wave,map.start).setHP)
+    } else {
+    enemiesToSpawn = Buffer.tabulate(wave + 3)(n => new normal(wave, map.start).setHP)
   }
-  
+  }
 }
 
 def spawn ={                                                    // spawnaa viholliset jota ei ole vielä spawnattu
-   if (!enemiesToSpawn.isEmpty && ticks%10 == 0) {
+   if (!enemiesToSpawn.isEmpty && ticks%20 == 0) {
      enemies = enemies :+ enemiesToSpawn.head
      enemiesToSpawn = enemiesToSpawn.tail
    }
   
 }
 
-
-
-def addSniper(location: GridPos) = {                            //metodi joka lisää tornit
-  towers += (new Sniper(location))
+def upgradeTower(location: GridPos): Unit = {
+  towers.find(_.location == location) match {
+    case Some(e) => {
+      if (gold-e.upgradePrice >= 0) {
+      gold = gold - e.upgradePrice
+      e.upgrade
+    }
+    }
+    case None =>
+  }
+ 
 }
 
-def addClassic(location: GridPos) = {
-  towers += (new Classic(location))
+
+
+def addSniper(location: GridPos): Unit = {                             //metodit joka lisää tornit (jos mahdollista)
+  if (!towers.map(_.location).contains(location) && !map.path.contains(location) && gold-costOfSniper >= 0) {
+  towers += new Sniper(location)
+  gold = gold - costOfSniper 
+}
+}
+
+def addClassic(location: GridPos): Unit = {
+  if (!towers.map(_.location).contains(location) && !map.path.contains(location) && gold-costOfClassic >= 0) {
+ towers += new Classic(location)
+   gold = gold - costOfClassic
+}
 }
 
 def kill = {                                                     // ottaa pois kuolleet viholliset sekä lisää rahaa 
@@ -52,13 +77,16 @@ def takeDmg = {                                                  // vihollinen m
   hp = hp - enemies.map(_.dealDmg(map)).sum
 }
 
+def gameOver = {
+  hp<1
+}
 
 def timePasses() = {                                              // kaikki mitä tapahtuu joka Tick
   ticks += 1
-  waveOver
   spawn
   takeDmg
   kill
+  gameOver
   enemies.map(_.moveForward(map))
   towers.map(_.chooseTarget(enemies))
   towers.map(_.tickCounter += 1)

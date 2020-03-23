@@ -1,17 +1,27 @@
 package Game
 import o1._
-import TDGUI.TD._
 import Constants._
+import java.awt.{ Graphics2D, Color, BasicStroke }
 
-class Enemy(initialHP: Int, start: GridPos, speed: Int) {
+abstract class Enemy(initialHP: Int, start: GridPos) {
   
-var hp = initialHP
+var v: Int                              //monta pixeliä/tick
+  
+var color: Color
 
-var v = speed                            //monta pixeliä/tick
+var dmgColor: Color
+
+var size: Int
+
+var hpMult: Int
+
+var hp = initialHP*hpMult        
 
 var tickC = 0                            //tick systeemi
 
 var gridLocation = start
+
+def toPixelPos(gridPos: GridPos) = new Pos(gridPos.x * Constants.pixelsPerGridSquare, gridPos.y * Constants.pixelsPerGridSquare)
 
 var x = toPixelPos(start).x
 
@@ -19,8 +29,13 @@ var y = toPixelPos(start).y
 
 var pLocation = toPixelPos(start)
 
+def setHP = {
+  hp = initialHP*hpMult
+  this
+}
+ 
 def isdmged = {
- this.hp != initialHP 
+ this.hp != initialHP*hpMult   
 }
 
 var dir = South
@@ -29,13 +44,13 @@ def dead = (hp<=0)
 
 def move(d: CompassDir) = {               //Mihin suuntaan liikutaan
   if (d == South) {
-    y += speed
+    y += v
   } else if (d == North) {
-    y -= speed
+    y -= v
   } else if (d == East) {
-    x += speed
+    x += v
   } else if (d == West) {
-    x -= speed
+    x -= v
   }
   
   pLocation = new Pos(x,y)
@@ -60,9 +75,36 @@ def moveForward(map: Map) = {                                //liikkuu gridissä
   }
   tickC += 1
   move(dir)
-  if (tickC%(pixelsPerGridSquare/speed) == 0) {
+  if (tickC%(pixelsPerGridSquare/v) == 0) {
     gridLocation = gridLocation.neighbor(dir)
     tickC = 0
   }
 }
 }
+
+class normal(intialHP: Int, start: GridPos) extends Enemy(intialHP,start) {
+  var v = 2
+  var color = Color.PINK
+  var dmgColor = Color.RED
+  var size = 10
+  var hpMult = 2
+}
+
+class speedyBoi(intialHP: Int, start: GridPos) extends Enemy(intialHP,start) {
+
+var v = 4
+var color = Color.YELLOW
+var dmgColor = Color.ORANGE
+var size = 20
+var hpMult = 1
+}
+
+class thickBoi(intialHP: Int, start: GridPos) extends Enemy(intialHP,start) {
+  var v = 1
+  var color = Color.BLACK
+  var dmgColor = Color.WHITE
+  var size = 0
+  var hpMult = 20
+}
+
+
