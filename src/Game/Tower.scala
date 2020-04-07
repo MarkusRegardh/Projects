@@ -31,7 +31,7 @@ class Sniper(loc: GridPos) extends Tower(loc){
 var dmg = 50
 val color= Color.RED
 val name = "Sniper"
-var range = 100000
+var range = 100
 var fireRate = 100
 var target: Option[Enemy] = None
 var tickCounter= 0
@@ -41,7 +41,7 @@ var lvl = 1
 
 def upgrade = {
   lvl += 1
-  dmg = dmg * 2
+  dmg = dmg + 20
 }
 
 def chooseTarget(enemies: Buffer[Enemy]) = {
@@ -77,7 +77,71 @@ class Classic(loc: GridPos) extends Tower(loc){
   
   def upgrade = {
     lvl += 1
-    dmg = dmg*2
+    dmg = dmg + 5
+  }
+  def shoot= {
+  if (tickCounter%fireRate == 0) {
+    target match {
+      case Some(enemy) => enemy.hp = enemy.hp - dmg
+      case None => 
+    }
+    tickCounter = 1
+  }
+}
+}
+
+class AllAround(loc: GridPos) extends Tower(loc) {
+  var dmg = 10
+  val color = Color.GREEN
+  val name = "AllAround"
+  var range = 3
+  var fireRate = 40
+  var target: Option[Enemy] = None
+  var targets = Buffer[Enemy]()
+  var tickCounter= 0
+  val location = loc
+  var price = costOfAll
+  var lvl = 1
+  
+  def chooseTarget(enemies: Buffer[Enemy]) = {
+    targets = enemies.filter(range >= _.gridLocation.distance(this.location))
+  }
+  
+  
+  
+  def upgrade = {
+    lvl += 1
+    range = range + 1
+    dmg = dmg + 5
+  }
+  def shoot= {
+  if (tickCounter%fireRate == 0) {
+   for (a <- targets){
+     a.hp = a.hp - dmg
+    }
+    tickCounter = 1
+  }
+}   
+}
+class SuperTower(loc: GridPos) extends Tower(loc){
+  var dmg = 40
+  val color = Color.BLACK
+  val name = "Super Tower"
+  var range = 8
+  var fireRate = 5
+  var target: Option[Enemy] = None
+  var tickCounter= 0
+  val location = loc
+  var price = costOfSuper
+  var lvl = 1
+  
+  def chooseTarget(enemies: Buffer[Enemy]) = {
+   target = enemies.filter(range >= _.gridLocation.distance(this.location)).headOption
+  }
+  
+  def upgrade = {
+    lvl += 1
+    dmg = dmg + 5
   }
   def shoot= {
   if (tickCounter%fireRate == 0) {

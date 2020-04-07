@@ -5,8 +5,8 @@ import Game.Constants._
 
 class Game(map: Map) {
   
-var hp = 20                             //pelaajan HP
-var gold = 50                           //rahat millä voi ostaa torneja
+var hp = initialHP                         //pelaajan HP
+var gold = initialGold                           //rahat millä voi ostaa torneja
 var wave = 0                         //mones kierros on meneillään
 var ticks = 0                           //tick systeemi
 
@@ -39,6 +39,8 @@ def spawn ={                                                    // spawnaa vihol
   
 }
 
+
+
 def upgradeTower(location: GridPos): Unit = {
   towers.find(_.location == location) match {
     case Some(e) => {
@@ -58,6 +60,20 @@ def addSniper(location: GridPos): Unit = {                             //metodit
   if (!towers.map(_.location).contains(location) && !map.path.contains(location) && gold-costOfSniper >= 0) {
   towers += new Sniper(location)
   gold = gold - costOfSniper 
+}
+}
+
+def addAll(location: GridPos): Unit = {                             //metodit joka lisää tornit (jos mahdollista)
+  if (!towers.map(_.location).contains(location) && !map.path.contains(location) && gold-costOfAll >= 0) {
+  towers += new AllAround(location)
+  gold = gold - costOfAll 
+}
+}
+
+def addSuper(location: GridPos): Unit = {                             //metodit joka lisää tornit (jos mahdollista)
+  if (!towers.map(_.location).contains(location) && !map.path.contains(location) && gold-costOfSuper >= 0) {
+  towers += new SuperTower(location)
+  gold = gold - costOfSuper
 }
 }
 

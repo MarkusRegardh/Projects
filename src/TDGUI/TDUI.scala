@@ -36,7 +36,7 @@ object TDUI extends SimpleSwingApplication{
       savedPoint = None
     }
     }
-    }
+    } 
     
     val addSniper = new Action("Add Sniper: " + Constants.costOfSniper.toString() + "GP") {
     def  apply = {
@@ -46,6 +46,26 @@ object TDUI extends SimpleSwingApplication{
     }
     }
     }
+    
+    val addAll = new Action ("Add AllAround: " + Constants.costOfAll.toString()+ "GP") {
+      def apply = {
+        if (savedPoint != None) {
+          game.addAll(savedPoint.get)
+          savedPoint = None
+        }
+      }
+    }
+    
+    val addSuper = new Action ("Add Super Tower: " + Constants.costOfSuper.toString()+ "GP") {
+      def apply = {
+        if (savedPoint != None) {
+          game.addSuper(savedPoint.get)
+          savedPoint = None
+        }
+      }
+    }
+    
+    
     
     val upgradeTower = new Action("Upgrade: " + Constants.costOfUpgrade.toString() + "GP") {
       def apply = {
@@ -68,6 +88,18 @@ object TDUI extends SimpleSwingApplication{
       }
     }
     
+     val allAroundInfo = new Action("AllAround") {
+      def apply = {
+        Dialog.showMessage(top, "The AllAround tower shoots all enemies in its range")
+      }
+    }
+     
+     val superInfo = new Action("Super Tower") {
+       def apply = {
+         Dialog.showMessage(top, "Super OP")
+       }
+     }
+    
     val howTo = new Action("How to") {
       def apply = {
         Dialog.showMessage(top, "Press a location on the map to place a tower or to upgrade an existing tower \n Press Next Wave to spawn in a set of enemies \n Use gold to buy towers, and make sure your HP doesn't drop down to 0")
@@ -84,6 +116,12 @@ object TDUI extends SimpleSwingApplication{
         contents += new MenuItem ("Sniper") {
           this.action_=(sniperInfo)
         }
+        contents += new MenuItem ("AllAround") {
+          this.action_=(allAroundInfo)
+        }
+        contents += new MenuItem ("Super Tower") {
+          this.action_=(superInfo)
+        }
       }
       contents += new MenuItem("How to") {
        this.action_=(howTo)
@@ -91,6 +129,40 @@ object TDUI extends SimpleSwingApplication{
     }
     
     
+    val mapPopup = new PopupMenu {
+      contents += new MenuItem("Easy") {
+        this.action_=(new Action("Easy") {
+          def apply = {
+            currentMap = map1
+            game = new Game(currentMap)
+          }
+        })
+      }
+      contents +=new MenuItem("Medium") {
+        this.action_=(new Action("Medium") {
+          def apply = {
+            currentMap = map2
+            game = new Game(currentMap)
+          }
+        })
+    }
+      contents +=new MenuItem("Hard") {
+        this.action_=(new Action("Hard") {
+          def apply = {
+            currentMap = map3
+            game = new Game(currentMap)
+          }
+        })
+      }
+       contents +=new MenuItem("Custom Map") {
+        this.action_=(new Action("Custom Map") {
+          def apply = {
+            currentMap = customMap
+            game = new Game(currentMap)
+    }
+        })
+       }
+    }
      
     
     val popupMenu = new PopupMenu {
@@ -100,6 +172,12 @@ object TDUI extends SimpleSwingApplication{
       }
       contents += new MenuItem ("Add Sniper") {
         this.action_=(addSniper)
+      }
+      contents += new MenuItem ("Add AllAround") {
+        this.action_=(addAll)
+      }
+      contents += new MenuItem ("Add Super Tower") {
+        this.action_=(addSuper)
       }
     }
     contents += new MenuItem("Upgrade Towers") {
@@ -111,7 +189,10 @@ object TDUI extends SimpleSwingApplication{
     
     this.menuBar = new MenuBar {
       contents += new MenuItem(Action("Next Wave") { game.waveOver } )
-      contents += new MenuItem(Action("Info"){infoPopup.show(this, 200, 20)})
+      contents += new MenuItem(Action("Info"){infoPopup.show(this, 110, 20)})
+      contents += new MenuItem(Action("Restart"){game = new Game(currentMap)})
+      contents += new MenuItem(Action("Change Map"){mapPopup.show(this, 320, 20)})
+      contents += new MenuItem(Action("Sandbox Mode"){game.gold = 1000000})
       contents += new MenuItem(Action("Quit") { dispose() } )
     }
   
@@ -119,9 +200,12 @@ object TDUI extends SimpleSwingApplication{
     
     
     
-    val mapTest = new File("./Maps/TestMap.txt")
-    val map = world.loader(mapTest)
-    val game = new Game(map)
+    val map1 = world.loader(new File("./Maps/map1.txt"))
+    val map2 = world.loader(new File("./Maps/map2.txt"))
+    val map3 = world.loader(new File("./Maps/map3.txt"))
+    val customMap = world.loader(new File("./Maps/custom.txt"))
+    var currentMap = map1
+    var game = new Game(map1)
 
     
     def drawEnemies(g: Graphics2D) = {
@@ -147,7 +231,7 @@ object TDUI extends SimpleSwingApplication{
     
     
     def drawMap(g: Graphics2D) = {
-      for (a <- map.path) {
+      for (a <- currentMap.path) {
         g.setColor(Color.GRAY)
         g.fillRect(toPixelPos(a)._1,toPixelPos(a)._2, Constants.pixelsPerGridSquare, Constants.pixelsPerGridSquare)
       }
