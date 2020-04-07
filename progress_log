@@ -35,3 +35,18 @@ oppimalla scala swingin.
 noin 20h työtä
 
 projekti on vielä aikataulun edellä
+
+Väliraportti 3
+
+Pelissä on lähes kaikki toiminnot mitä olin suunnitellut, ja alkaa olemaan valmis.
+Tekemistä jäjellä on testit, sekä voin hieman parantaa pelin asetuksuvuutta.
+Olen eniten päivittänyt GUIta sekä olen tehnyt muutaman uuden tornin.
+
+Testiluokkia en ole tehnyt, mutta peli toimii ilman virheitä.
+
+Ei ole esiintynyt mitään suurempia virheitä. On ollut hieman hankalaa oppia scala Swing
+ja mitä kaikkea sillä voi tehdä ja miten, mutta olen saanut kaikki haluamani toiminnot toimimaan
+
+noin 10h töitä
+
+projekti menee aikataulun mukaisesti
