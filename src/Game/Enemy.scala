@@ -66,7 +66,7 @@ def dealDmg(map: Map) = {                  //pelaaja ottaa dmg jos vihollinen ma
 }
 }
 
-def moveForward(map: Map) = {                                //liikkuu gridissä sekä pixeleissä (että liikkuvuus olisi sujuvaa), katsoo myös mihin suntaan kartan "path" liikkuu 
+def moveForward(map: Map) = {                                //liikkuu gridissä sekä pixeleissä (että liikkuvuus näyttäisi sujuvalta), katsoo myös mihin suntaan kartan "path" liikkuu 
   while (!map.path.contains(gridLocation.neighbor(dir))){
     dir = dir.clockwise
     if (!map.path.contains(gridLocation.neighbor(dir))){

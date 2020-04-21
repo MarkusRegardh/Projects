@@ -28,6 +28,8 @@ object TDUI extends SimpleSwingApplication{
     preferredSize = new Dimension(width,height)
     maximumSize   = new Dimension(width,height)
     
+    //Monta eri Action eri toimintoihin
+    
     
    val addClassic = new Action("Add Classic: " + Constants.costOfClassic.toString() + "GP") {
     def  apply = {
@@ -102,11 +104,18 @@ object TDUI extends SimpleSwingApplication{
     
     val howTo = new Action("How to") {
       def apply = {
-        Dialog.showMessage(top, "Press a location on the map to place a tower or to upgrade an existing tower \n Press Next Wave to spawn in a set of enemies \n Use gold to buy towers, and make sure your HP doesn't drop down to 0")
+        Dialog.showMessage(top, "Press a location on the map to place a tower or to upgrade an existing tower \n Press Next Wave to spawn in a set of enemies \n Use gold to buy towers, and make sure your HP doesn't drop down to 0 \n You can build a edit the custom Map in the Map files")
+      }
+    }
+   
+    val gModes= new Action("Game Modes") {
+      def apply = {
+        Dialog.showMessage(top, "Sandbox Mode is a mode with a ton of cash \n Hardcore Mode is a mode with 1 HP \n Changing the difficulty increases or decreases the income u get per kill, and also changes the map")
       }
     }
     
    
+    //erillaisia Menuita
     
     val infoPopup = new PopupMenu {
       contents += new Menu("Towers") {
@@ -126,7 +135,12 @@ object TDUI extends SimpleSwingApplication{
       contents += new MenuItem("How to") {
        this.action_=(howTo)
       }
+      contents += new MenuItem("Game Modes") {
+        this.action_=(gModes)
+      }
     }
+    
+   
     
     
     val mapPopup = new PopupMenu {
@@ -134,7 +148,10 @@ object TDUI extends SimpleSwingApplication{
         this.action_=(new Action("Easy") {
           def apply = {
             currentMap = map1
+            Constants.income = 3
             game = new Game(currentMap)
+            sandBox = false
+            HC = false
           }
         })
       }
@@ -142,7 +159,10 @@ object TDUI extends SimpleSwingApplication{
         this.action_=(new Action("Medium") {
           def apply = {
             currentMap = map2
+            Constants.income = 2
             game = new Game(currentMap)
+            sandBox = false
+            HC = false
           }
         })
     }
@@ -150,7 +170,10 @@ object TDUI extends SimpleSwingApplication{
         this.action_=(new Action("Hard") {
           def apply = {
             currentMap = map3
+            Constants.income = 1
             game = new Game(currentMap)
+            sandBox = false
+            HC = false
           }
         })
       }
@@ -158,7 +181,34 @@ object TDUI extends SimpleSwingApplication{
         this.action_=(new Action("Custom Map") {
           def apply = {
             currentMap = customMap
+            Constants.income = 2
             game = new Game(currentMap)
+            sandBox = false
+            HC = false
+    }
+        })
+       }
+       contents +=new MenuItem("Sandbox Mode") {
+        this.action_=(new Action("Sandbox Mode") {
+          def apply = {
+            sandBox = true
+            HC = false
+            currentMap = map1
+            Constants.income = 10
+            game = new Game(currentMap)
+            game.gold = 100000
+    }
+        })
+       }
+       contents +=new MenuItem("HardCore") {
+        this.action_=(new Action("HardCore") {
+          def apply = {
+            sandBox = false
+            HC = true
+            currentMap = map2
+            Constants.income = 1
+            game = new Game(currentMap)
+            game.hp = 1
     }
         })
        }
@@ -189,14 +239,27 @@ object TDUI extends SimpleSwingApplication{
     
     this.menuBar = new MenuBar {
       contents += new MenuItem(Action("Next Wave") { game.waveOver } )
-      contents += new MenuItem(Action("Info"){infoPopup.show(this, 110, 20)})
-      contents += new MenuItem(Action("Restart"){game = new Game(currentMap)})
-      contents += new MenuItem(Action("Change Map"){mapPopup.show(this, 320, 20)})
-      contents += new MenuItem(Action("Sandbox Mode"){game.gold = 1000000})
+      contents += new MenuItem(Action("Info"){infoPopup.show(this, 130, 20)})
+      contents += new MenuItem(Action("Restart"){restart})
+      contents += new MenuItem(Action("Change Mode"){mapPopup.show(this, 380, 20)})
       contents += new MenuItem(Action("Quit") { dispose() } )
     }
   
+     var sandBox = false
+    var HC = false
     
+    def restart = {                             //restarts game with current gamemode
+      game = new Game(currentMap)
+      if (sandBox) {
+        game.gold = 100000
+        Constants.income = 10
+      } else if (HC) {
+        game.hp = 1
+        Constants.income = 1
+      } else {
+        game
+      }
+    }
     
     
     
@@ -208,6 +271,8 @@ object TDUI extends SimpleSwingApplication{
     var game = new Game(map1)
 
     
+    //kaikki mitä pitää piirtää GUIssä
+    
     def drawEnemies(g: Graphics2D) = {
       for (a <- game.enemies) {
         if (a.isdmged){
@@ -216,6 +281,8 @@ object TDUI extends SimpleSwingApplication{
         g.setColor(a.color)
       }
         g.fillOval(a.x.toInt + a.size/2, a.y.toInt + a.size/2, Constants.pixelsPerGridSquare-a.size, Constants.pixelsPerGridSquare-a.size)
+        g.setColor(Color.BLACK)
+       if (a.hp > 0) g.drawString(a.hp.toString(), a.x.toInt + a.size/2, a.y.toInt + a.size/2)
       }
       
     }
@@ -269,7 +336,7 @@ object TDUI extends SimpleSwingApplication{
         g.setColor(Color.BLACK)
         g.fillRect(0,0,width,height)
         g.setColor(Color.RED)
-        g.drawString("GAME OVER", width/2, height/2)
+        g.drawString("GAME OVER", width/2-50, height/2)
       }
     }
     

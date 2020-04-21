@@ -45,7 +45,7 @@ def upgrade = {
 }
 
 def chooseTarget(enemies: Buffer[Enemy]) = {
-   target = enemies.filter(range >= _.gridLocation.distance(this.location)).headOption
+   target = enemies.filter(range >= _.gridLocation.distance(this.location)).sortBy(_.hp).lastOption
   }
 
 def shoot= {
@@ -60,7 +60,7 @@ def shoot= {
 }
 
 class Classic(loc: GridPos) extends Tower(loc){
-  var dmg = 15
+  var dmg = 5
   val color = Color.BLUE
   val name = "Classic"
   var range = 4
@@ -77,7 +77,7 @@ class Classic(loc: GridPos) extends Tower(loc){
   
   def upgrade = {
     lvl += 1
-    dmg = dmg + 5
+    dmg = dmg + 3
   }
   def shoot= {
   if (tickCounter%fireRate == 0) {
@@ -91,11 +91,11 @@ class Classic(loc: GridPos) extends Tower(loc){
 }
 
 class AllAround(loc: GridPos) extends Tower(loc) {
-  var dmg = 10
+  var dmg = 8
   val color = Color.GREEN
   val name = "AllAround"
   var range = 3
-  var fireRate = 40
+  var fireRate = 50
   var target: Option[Enemy] = None
   var targets = Buffer[Enemy]()
   var tickCounter= 0
@@ -112,7 +112,7 @@ class AllAround(loc: GridPos) extends Tower(loc) {
   def upgrade = {
     lvl += 1
     range = range + 1
-    dmg = dmg + 5
+    dmg = dmg + 3
   }
   def shoot= {
   if (tickCounter%fireRate == 0) {

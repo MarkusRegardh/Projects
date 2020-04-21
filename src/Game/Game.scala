@@ -20,6 +20,7 @@ var enemiesToSpawn = Buffer[Enemy]()                          //Viholliset jotka
 
 def waveOver = {                                              //katsoo onko wave loppunut sekä lisää ensi wavein viholliset
   if (enemies.isEmpty && enemiesToSpawn.isEmpty) {
+    gold += wave
     wave += 1
     if (wave%4 == 0) {
     enemiesToSpawn = Buffer.tabulate(wave + 5)(n => new speedyBoi(wave, map.start).setHP)
@@ -41,7 +42,7 @@ def spawn ={                                                    // spawnaa vihol
 
 
 
-def upgradeTower(location: GridPos): Unit = {
+def upgradeTower(location: GridPos): Unit = {                  //upgradeaa towerin
   towers.find(_.location == location) match {
     case Some(e) => {
       if (gold-e.upgradePrice >= 0) {
